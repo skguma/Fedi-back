@@ -2,18 +2,22 @@ package com.fedi.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "tweet")
 public class Tweet {
+	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "tweet_id")
 	private Long tweetId;
 	
@@ -26,5 +30,13 @@ public class Tweet {
 	private String likes;
 	
 	private String retweets;
+	
+	@Builder
+	public Tweet(String accountId, String tweetUrl, String likes, String retweets) {
+		this.accountId = accountId;
+		this.tweetUrl = tweetUrl;
+		this.likes = likes;
+		this.retweets = retweets;
+	}
 	
 }
