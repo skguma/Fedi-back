@@ -51,11 +51,6 @@ public class MailHandler {
         messageHelper.addAttachment(displayFileName, fsr);
     }
 
-    // 이미지 삽입
-    public void setInline(String contentId, String pathToInline) throws MessagingException, IOException {
-
-    }
-
     // 발송
     public void send() {
         try {
