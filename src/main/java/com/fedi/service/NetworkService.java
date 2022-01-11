@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fedi.dto.NetworkResponseDto;
-import com.fedi.entity.Tweet;
-import com.fedi.repository.TweetRepository;
+import com.fedi.domain.entity.Tweet;
+import com.fedi.domain.repository.TweetRepository;
+import com.fedi.web.dto.NetworkResponseDto;
 
 import lombok.RequiredArgsConstructor;
 

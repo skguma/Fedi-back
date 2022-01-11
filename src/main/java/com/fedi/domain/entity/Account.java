@@ -1,4 +1,4 @@
-package com.fedi.entity;
+package com.fedi.domain.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

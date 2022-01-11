@@ -1,11 +1,11 @@
-package com.fedi.repository;
+package com.fedi.domain.repository;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.fedi.entity.Tweet;
+import com.fedi.domain.entity.Tweet;
 
 public interface TweetRepository extends JpaRepository<Tweet, Long> {
 

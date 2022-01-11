@@ -1,6 +1,6 @@
-package com.fedi.dto;
+package com.fedi.web.dto;
 
-import com.fedi.entity.Tweet;
+import com.fedi.domain.entity.Tweet;
 
 import lombok.Getter;
 

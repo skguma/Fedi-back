@@ -1,18 +1,14 @@
-package com.fedi.controller;
+package com.fedi.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fedi.dto.NetworkResponseDto;
-import com.fedi.entity.Tweet;
 import com.fedi.service.NetworkService;
+import com.fedi.web.dto.NetworkResponseDto;
 
 import lombok.RequiredArgsConstructor;
 

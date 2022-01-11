@@ -1,4 +1,4 @@
-package com.fedi.entity;
+package com.fedi.domain.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,29 +14,26 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "image")
-public class Image {
+@Table(name = "analysis")
+public class Analysis {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "analysis_id")
+	private Long analysisId;
+	
 	@Column(name = "image_id")
 	private Long imageId;
 	
-	@Column(name = "tweet_id")
-	private Long tweetId;
+	private Double similarity;
 	
-	@Column(name = "image_url")
-	private String imageUrl;
-	
-	private Double vector;
-	
-	private String eyes;
+	@Column(name = "input_vector")
+	private Double inputVector;
 	
 	@Builder
-	public Image(Long tweetId, String imageUrl, Double vector, String eyes) {
-		this.tweetId = tweetId;
-		this.imageUrl = imageUrl;
-		this.vector = vector;
-		this.eyes = eyes;
+	public Analysis(Long imageId, Double similarity, Double inputVector) {
+		this.imageId = imageId;
+		this.similarity = similarity;
+		this.inputVector = inputVector;
 	}
 }

@@ -1,8 +1,8 @@
-package com.fedi.repository;
+package com.fedi.domain.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.fedi.entity.Image;
+import com.fedi.domain.entity.Image;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
 
