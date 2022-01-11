@@ -35,7 +35,7 @@ dependencies {
 //    implementation ('org.springframework.boot:spring-boot-starter-aop')
 //
 //    implementation (group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.1.RELEASE')
-//    implementation ('org.springframework.boot:spring-boot-starter-mail')
+    implementation ('org.springframework.boot:spring-boot-starter-mail')
 
 
 }
