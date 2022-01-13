@@ -2,9 +2,12 @@ package com.fedi.domain.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Builder;
@@ -22,8 +25,9 @@ public class Analysis {
 	@Column(name = "analysis_id")
 	private Long analysisId;
 	
-	@Column(name = "image_id")
-	private Long imageId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "image_id")
+	private Image image;
 	
 	private Double similarity;
 	
@@ -31,8 +35,8 @@ public class Analysis {
 	private Double inputVector;
 	
 	@Builder
-	public Analysis(Long imageId, Double similarity, Double inputVector) {
-		this.imageId = imageId;
+	public Analysis(Image image, Double similarity, Double inputVector) {
+		this.image = image;
 		this.similarity = similarity;
 		this.inputVector = inputVector;
 	}
