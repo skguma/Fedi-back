@@ -22,12 +22,6 @@ public class Account {
 	@Column
 	private String accountName;
 	
-<<<<<<< Updated upstream
-=======
-//	@OneToMany(mappedBy = "account")
-//	private List<Tweet> tweets = new ArrayList<>();
-	
->>>>>>> Stashed changes
 	@Builder
 	public Account(String accountId, String accountName) {
 		this.accountId = accountId;

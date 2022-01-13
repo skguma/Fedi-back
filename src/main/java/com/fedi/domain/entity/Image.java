@@ -41,12 +41,6 @@ public class Image {
 	
 	private String eyes;
 	
-<<<<<<< Updated upstream
-=======
-//	@OneToMany(mappedBy = "image")
-//	private List<Analysis> analyses = new ArrayList<>();
->>>>>>> Stashed changes
-	
 	@Builder
 	public Image(Tweet tweet, String imageUrl, Double vector, String eyes) {
 		this.tweet = tweet;
