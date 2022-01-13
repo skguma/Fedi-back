@@ -1,5 +1,6 @@
 package com.fedi.domain.entity;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +41,6 @@ public class Image {
 	
 	private String eyes;
 	
-	@OneToMany(mappedBy = "image")
-	private List<Analysis> analyses = new ArrayList<>();
 	
 	@Builder
 	public Image(Tweet tweet, String imageUrl, Double vector, String eyes) {
@@ -51,3 +50,4 @@ public class Image {
 		this.eyes = eyes;
 	}
 }
+
