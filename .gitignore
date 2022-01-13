@@ -7,3 +7,4 @@ src/main/resources/application-datasource.properties
 .project
 .settings/
 bin/
+settings.gradle

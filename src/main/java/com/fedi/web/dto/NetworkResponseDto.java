@@ -8,19 +8,19 @@ import lombok.Getter;
 
 @Getter
 public class NetworkResponseDto {
-	private Long tweetId;
-	private String accountId;
-	private String accountName;
-	private String likes;
-	private String retweets;
-	
-	public NetworkResponseDto(Tweet entity) {
-		this.tweetId = entity.getTweetId();
-		this.accountId = entity.getAccount().getAccountId();
-		this.accountName = entity.getAccount().getAccountName();
-		this.likes = entity.getLikes();
-		this.retweets = entity.getRetweets();
-	}
+//	private Long tweetId;
+//	private String accountId;
+//	private String accountName;
+//	private String likes;
+//	private String retweets;
+//	
+//	public NetworkResponseDto(Tweet entity) {
+//		this.tweetId = entity.getTweetId();
+//		this.accountId = entity.getAccount().getAccountId();
+//		this.accountName = entity.getAccount().getAccountName();
+//		this.likes = entity.getLikes();
+//		this.retweets = entity.getRetweets();
+//	}
 	
 	private ArrayList<NodeDto> nodes;
 	private ArrayList<LinkDto> links;
