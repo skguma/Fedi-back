@@ -56,7 +56,7 @@ public class ImageService {
             String imageUrl = s3Service.upload(image);
 
             Image entity = Image.builder()
-                    .tweetId(tweetId)
+                    .tweet(tweet)
                     .imageUrl(imageUrl)
                     .build();
 
