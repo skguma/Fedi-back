@@ -47,7 +47,7 @@ public class NetworkController {
 //		
 //		RestTemplate rt = new RestTemplate();
 //		
-//		//아니면 getForObject 사용?
+//		
 //		ResponseEntity<LikeRpaResponseDto[]> responseDto = rt.exchange(
 //				"https://{요청할 서버 주소}",
 //				HttpMethod.GET,
