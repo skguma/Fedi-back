@@ -30,14 +30,18 @@ public class Tweet {
 
     private String retweets;
 
-    private Boolean deleteFlag;
+    private Boolean reportFlag;
 
     @Builder
-    public Tweet(String accountId, String tweetUrl, String likes, String retweets, Boolean deleteFlag) {
+    public Tweet(String accountId, String tweetUrl, String likes, String retweets, Boolean reportFlag) {
         this.accountId = accountId;
         this.tweetUrl = tweetUrl;
         this.likes = likes;
         this.retweets = retweets;
-        this.deleteFlag = deleteFlag;
+        this.reportFlag = reportFlag;
+    }
+
+    public void updateReportFlag(){
+        this.reportFlag = true;
     }
 }

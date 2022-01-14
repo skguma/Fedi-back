@@ -10,6 +10,4 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
 
     Optional<Tweet> findById(Long id);
     List<Tweet> findAllById(Iterable<Long> ids);
-    Tweet findByTweetUrlAndDeleteFlagFalse(String tweetUrl);
-
 }

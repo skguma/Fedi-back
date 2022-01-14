@@ -48,10 +48,10 @@ public class ImageService {
             Tweet tweet = Tweet.builder()
                     .accountId(account.getAccountId())
                     .tweetUrl(requestDto.getTweetUrl())
-                    .deleteFlag(false)
+                    .reportFlag(false)
                     .build();
 
-            Long tweetId = tweetRepository.save(tweet).getTweetId();
+            tweetRepository.save(tweet);
 
             String imageUrl = s3Service.upload(image);
 
