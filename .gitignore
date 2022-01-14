@@ -8,3 +8,4 @@ src/main/resources/application-datasource.properties
 .settings/
 bin/
 settings.gradle
+src/main/webapp/META-INF/MANIFEST.MF
