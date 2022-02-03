@@ -31,10 +31,10 @@ public class NetworkService {
 		return tweets;
 	}
 	
-	@Transactional(readOnly = true)
-	public List<NetworkResponseDto> searchAllById(Iterable<Long> ids){
-		return tweetRepository.findAllById(ids).stream()
-				.map(NetworkResponseDto::new)
-				.collect(Collectors.toList());
-	}
+// 	@Transactional(readOnly = true)
+// 	public List<NetworkResponseDto> searchAllById(Iterable<Long> ids){
+// 		return tweetRepository.findAllById(ids).stream()
+// 				.map(NetworkResponseDto::new)
+// 				.collect(Collectors.toList());
+// 	}
 }
