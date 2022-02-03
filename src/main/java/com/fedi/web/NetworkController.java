@@ -22,7 +22,10 @@ public class NetworkController {
 	public List<NetworkResponseDto> getNetworks(@RequestBody Map<String, List<Long>> tweetInfo){
 		
 		List<Long> tweetIds =tweetInfo.get("tweetId");
-		return networkService.searchAllById(tweetIds);
+		
+		List<NetworkResponseDto> networks = new ArrayList<>();
+		
+		return networks;
 	}
 	
 }
