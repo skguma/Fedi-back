@@ -31,6 +31,8 @@ public class Tweet {
     private String tweetUrl;
 
     private Boolean reportFlag;
+    
+    private String retweets;
 
     @Builder
     public Tweet(Account account, String tweetUrl, Boolean reportFlag) {
