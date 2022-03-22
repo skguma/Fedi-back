@@ -21,4 +21,13 @@ public class TweetService {
             return "success";
         }
     }
+    
+    public String suspendTweet(Long tweetId) {
+    	try {
+    		tweetRepository.deleteById(tweetId);
+    	} catch (Exception e) {
+    		return "no tweet id: "+tweetId;
+    	}
+    	return "success";
+    }
 }
