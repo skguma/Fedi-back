@@ -121,7 +121,6 @@ public class NetworkController {
 				.nodes(nodeDtos)
 				.links(linkDtos).build();
 		
-		
 		return networks;
 	}
 	

@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 public class NetworkResponseDto {
-	
+
 	private ArrayList<NodeDto> nodes;
 	private ArrayList<LinkDto> links;
 	
