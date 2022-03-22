@@ -46,7 +46,7 @@ public class ImageService {
             accountRepository.save(account);
 
             Tweet tweet = Tweet.builder()
-                    .accountId(account.getAccountId())
+                    .account(account)
                     .tweetUrl(requestDto.getTweetUrl())
                     .reportFlag(false)
                     .build();
