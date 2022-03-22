@@ -1,8 +1,13 @@
 package com.fedi.web;
 
+import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,10 +26,18 @@ public class ResultController {
 	private final Double threshold = 95.0; //threshold
 	
 	@PostMapping(value="/results", consumes = {"multipart/form-data"})
-	public List<ResultDto> getResults(@RequestParam("file") MultipartFile file) throws Exception {
+	public void getResults(HttpServletResponse response, @RequestParam("file") MultipartFile file) throws Exception {
 		System.out.println(file.getOriginalFilename());	
 		
-		return resultService.searchGreatherThan(threshold);
+		String eyes = resultService.flaskTest(file);
+		System.out.println(eyes);
 		
-		}
+		response.sendRedirect("/results/view");
+		
+	}
+	
+	@GetMapping(value="/results/view")
+	public List<ResultDto> getResults(){
+		return resultService.searchGreatherThan(threshold);
+	}
 }
