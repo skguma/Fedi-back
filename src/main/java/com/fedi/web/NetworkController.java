@@ -124,4 +124,57 @@ public class NetworkController {
 		return networks;
 	}
 	
+	@GetMapping("/retweets")
+	public NetworkResponseDto getRetweets(@RequestBody Map<String, List<Long>> tweetInfo) throws JsonMappingException, JsonProcessingException, ParseException {
+		List<Long> tweetIds = tweetInfo.get("tweetId");
+		List<Tweet> tweets = networkService.findTweetsbyId(tweetIds);
+		ObjectMapper objMapper = new ObjectMapper();
+		JSONParser jsonParser = new JSONParser();
+		List<LikeRpaResponseDto> resDto = new ArrayList();
+		
+		ArrayList<NodeDto> nodeDtos = new ArrayList<>();
+		ArrayList<LinkDto> linkDtos = new ArrayList<>();
+		
+		int id = 0;
+		int sourceId = 0;
+		for (Tweet tweet : tweets) {
+			sourceId = ++id;
+			NodeDto node = NodeDto.builder()
+					.id(id)
+					.name(tweet.getAccount().getAccountName())
+					.accountId(tweet.getAccount().getAccountId())
+					.group(id)
+					.value(1)
+					.url(tweet.getTweetUrl()).build();
+			nodeDtos.add(node);
+			
+			JSONObject outputObj = (JSONObject)jsonParser.parse(tweet.getRetweets());
+			JSONArray jr = (JSONArray)outputObj.get("retweets");
+			resDto = objMapper.readValue(jr.toJSONString(), new TypeReference<List<LikeRpaResponseDto>>(){});
+
+			for (LikeRpaResponseDto dto : resDto) {
+				id++;
+				nodeDtos.add(NodeDto.builder()
+						.id(id)
+						.name(dto.getAccountName())
+						.accountId(dto.getAccountId())
+						.group(sourceId)
+						.value(0)
+						.url(dto.getUrl()).build());
+				
+				LinkDto link = LinkDto.builder()
+						.source(sourceId)
+						.target(id).build();
+				linkDtos.add(link);
+			}
+			
+		}
+	
+		NetworkResponseDto networks = NetworkResponseDto.builder()
+				.nodes(nodeDtos)
+				.links(linkDtos).build();
+		
+		return networks;
+	}
+	
 }
