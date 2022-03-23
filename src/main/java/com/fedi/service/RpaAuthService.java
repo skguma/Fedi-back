@@ -5,7 +5,6 @@ import java.util.List;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -92,7 +91,6 @@ public class RpaAuthService {
 	public Long callRpa(String access_token, String inputArguments) throws Exception{
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory()); //error lob 출력.
-		ObjectMapper objMapper = new ObjectMapper();
 		String url = "https://cloud.uipath.com/ncyzdol/DefaultTenant/odata/Jobs/UiPath.Server.Configuration.OData.StartJobs";
 		
 		HttpHeaders httpHeaders = new HttpHeaders();
