@@ -41,7 +41,7 @@ public class ResultService {
 				.collect(Collectors.toList());
 	}
 	
-	public String flaskTest(MultipartFile file) throws ParseException {	
+	public JSONObject getAnalysis(MultipartFile file, String images) throws ParseException {	
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
 		restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
@@ -54,14 +54,15 @@ public class ResultService {
 
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		map.add("file", file.getResource());
+		map.add("images", images);
 		HttpEntity<LinkedMultiValueMap<String, Object>> request = new HttpEntity<>(map, httpHeaders);
+		HttpEntity<String> response = restTemplate.postForEntity(url, request, String.class); // call api
 		
-		HttpEntity<String> response = restTemplate.postForEntity(url, request, String.class);
-		System.out.println("success");
 		JSONObject jsonObj = (JSONObject) jsonParser.parse(response.getBody().toString());
-		System.out.println(jsonObj.toString());
-		
-		String eyes = (String) jsonObj.get("eyes");
-		return eyes;
+		return jsonObj;
+//		System.out.println(jsonObj.toString());
+//		
+//		String eyes = (String) jsonObj.get("eyes");
+//		return eyes;
 	}
 }

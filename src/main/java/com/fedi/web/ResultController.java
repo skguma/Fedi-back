@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +14,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fedi.domain.entity.Image;
+import com.fedi.service.AnalysisService;
+import com.fedi.service.ImageService;
 import com.fedi.service.ResultService;
+import com.fedi.web.dto.ModelRequestDto;
+import com.fedi.web.dto.ModelResponseDto;
 import com.fedi.web.dto.ResultDto;
 
 import lombok.RequiredArgsConstructor;
@@ -23,14 +31,23 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class ResultController {
 	private final ResultService resultService;
+	private final ImageService imageService;
+	private final AnalysisService analysisService;
 	private final Double threshold = 95.0; //threshold
 	
 	@PostMapping(value="/results", consumes = {"multipart/form-data"})
 	public void getResults(HttpServletResponse response, @RequestParam("file") MultipartFile file) throws Exception {
-		System.out.println(file.getOriginalFilename());	
+		ObjectMapper objMapper = new ObjectMapper();
 		
-		String eyes = resultService.flaskTest(file);
-		System.out.println(eyes);
+		String images = imageService.getAllJsonString();
+		System.out.println(images);
+		
+		JSONObject analysis = resultService.getAnalysis(file, images);
+		Double inputVector = (Double) analysis.get("inputVector");
+		String modelResponse = (String) analysis.get("analysis");
+		List<ModelResponseDto> dtos = objMapper.readValue(modelResponse, new TypeReference<List<ModelResponseDto>>(){});
+		
+		analysisService.addAnalysis(dtos, inputVector);
 		
 		response.sendRedirect("/results/view");
 		

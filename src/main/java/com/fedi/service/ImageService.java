@@ -1,5 +1,6 @@
 package com.fedi.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fedi.domain.entity.Account;
 import com.fedi.domain.entity.Image;
 import com.fedi.domain.entity.Tweet;
@@ -7,13 +8,18 @@ import com.fedi.domain.repository.AccountRepository;
 import com.fedi.domain.repository.ImageRepository;
 import com.fedi.domain.repository.TweetRepository;
 import com.fedi.web.dto.ImageRequestDto;
+import com.fedi.web.dto.ModelRequestDto;
+import com.google.gson.Gson;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -22,6 +28,7 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final TweetRepository tweetRepository;
     private final S3Service s3Service;
+    
 
     @Transactional
     public String upload(List<MultipartFile> images, ImageRequestDto requestDto) throws IllegalArgumentException, IOException {
@@ -64,5 +71,13 @@ public class ImageService {
         }
 
         return "success";
+    }
+    
+    @Transactional(readOnly = true)
+    public String getAllJsonString() throws JsonProcessingException {
+    	List<Image> images = imageRepository.findAll();
+    	List<ModelRequestDto> reqDtos = images.stream().map(ModelRequestDto::new).collect(Collectors.toList());
+    	System.out.println("debug");
+    	return new Gson().toJson(reqDtos);
     }
 }
