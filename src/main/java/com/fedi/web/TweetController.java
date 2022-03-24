@@ -1,9 +1,14 @@
 package com.fedi.web;
 
+import com.fedi.service.AnalysisService;
+import com.fedi.service.ResultService;
 import com.fedi.service.TweetService;
+import com.fedi.web.dto.ResultDto;
+
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,16 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TweetController {
     private final TweetService tweetService;
+    private final ResultService resultService;
 
     @PatchMapping("/tweets/{tweetId}/report")
     public String reportTweet(@PathVariable Long tweetId){
         return tweetService.reportTweet(tweetId);
     }
     
-    @DeleteMapping("/tweets/{tweetId}/suspend")
-    public void suspendTweet(HttpServletResponse response, @PathVariable Long tweetId) throws IOException {
-    	tweetService.suspendTweet(tweetId);
-    	response.sendRedirect("/results/view");
+    @PatchMapping("/tweets/{tweetId}/suspend")
+    public String suspendTweet(HttpServletResponse response, @PathVariable Long tweetId) throws IOException {
+    	return tweetService.suspendTweet(tweetId);
+//    	
     }
 
 }

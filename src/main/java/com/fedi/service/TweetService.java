@@ -23,11 +23,14 @@ public class TweetService {
     }
     
     public String suspendTweet(Long tweetId) {
-    	try {
-    		tweetRepository.deleteById(tweetId);
-    	} catch (Exception e) {
-    		return "no tweet id: "+tweetId;
-    	}
-    	return "success";
+    	Tweet tweet = tweetRepository.findById(tweetId).orElseThrow(() -> new IllegalArgumentException("no tweet id: "+tweetId));
+
+        if(tweet.getSuspendFlag()){
+            return "already suspended";
+        }else{
+            tweet.updateSuspendFlag();
+            tweetRepository.save(tweet);
+            return "success";
+        }
     }
 }

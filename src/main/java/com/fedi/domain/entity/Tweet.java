@@ -32,16 +32,23 @@ public class Tweet {
 
     private Boolean reportFlag;
     
+    private Boolean suspendFlag;
+    
     private String retweets;
 
     @Builder
-    public Tweet(Account account, String tweetUrl, Boolean reportFlag) {
+    public Tweet(Account account, String tweetUrl, Boolean reportFlag, Boolean suspendFlag) {
         this.account = account;
         this.tweetUrl = tweetUrl;
         this.reportFlag = reportFlag;
+        this.suspendFlag = suspendFlag;
     }
 
     public void updateReportFlag(){
         this.reportFlag = true;
+    }
+    
+    public void updateSuspendFlag() {
+    	this.suspendFlag = true;
     }
 }
