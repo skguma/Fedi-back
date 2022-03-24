@@ -11,6 +11,7 @@ import com.fedi.domain.entity.Analysis;
 public interface AnalysisRepository extends JpaRepository<Analysis, Long> {
 	
 	@Query(value = "SELECT a FROM Analysis a JOIN a.image i JOIN i.tweet t"
-			+ " WHERE a.similarity >= :threshold ORDER BY a.similarity DESC")
-	public List<Analysis> findGreaterThan(@Param("threshold") Double threshold);
+			+ " WHERE a.similarity >= :threshold and t.suspendFlag=false and a.analysisId in :analysisIds"
+			+ " ORDER BY a.similarity DESC")
+	public List<Analysis> findGreaterThan(@Param("threshold") Double threshold, @Param("analysisIds") List<Long> analysisIds);
 }

@@ -1,6 +1,7 @@
 package com.fedi.web;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -33,28 +34,30 @@ public class ResultController {
 	private final ResultService resultService;
 	private final ImageService imageService;
 	private final AnalysisService analysisService;
-	private final Double threshold = 95.0; //threshold
 	
 	@PostMapping(value="/results", consumes = {"multipart/form-data"})
-	public void getResults(HttpServletResponse response, @RequestParam("file") MultipartFile file) throws Exception {
+	public List<ResultDto> getResults(HttpServletResponse response, @RequestParam("file") MultipartFile file) throws Exception {
 		ObjectMapper objMapper = new ObjectMapper();
 		
 		String images = imageService.getAllJsonString();
 		System.out.println(images);
 		
-		JSONObject analysis = resultService.getAnalysis(file, images);
+		JSONObject analysis = resultService.getAnalysis(file, images); // flask server api call
 		Double inputVector = (Double) analysis.get("inputVector");
 		String modelResponse = (String) analysis.get("analysis");
 		List<ModelResponseDto> dtos = objMapper.readValue(modelResponse, new TypeReference<List<ModelResponseDto>>(){});
 		
-		analysisService.addAnalysis(dtos, inputVector);
-		
-		response.sendRedirect("/results/view");
+		List<Long> analysisIds = analysisService.addAnalysis(dtos, inputVector);
+		return resultService.searchGreatherThan(analysisIds);
 		
 	}
 	
+	// test
 	@GetMapping(value="/results/view")
 	public List<ResultDto> getResults(){
-		return resultService.searchGreatherThan(threshold);
+		List<Long> analysisIds = new ArrayList<>();
+		analysisIds.add((long) 1);
+//		analysisIds.add((long) 2);
+		return resultService.searchGreatherThan(analysisIds);
 	}
 }

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -32,11 +33,14 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class ResultService {
 	
+	@Value("${threshold}")
+	private Double threshold;
+	
 	private final AnalysisRepository analysisRepository;
 	
 	@Transactional(readOnly = true)
-	public List<ResultDto> searchGreatherThan(Double threshold){
-		return analysisRepository.findGreaterThan(threshold).stream()
+	public List<ResultDto> searchGreatherThan(List<Long> analysisIds){
+		return analysisRepository.findGreaterThan(threshold, analysisIds).stream()
 				.map(ResultDto::new)
 				.collect(Collectors.toList());
 	}
