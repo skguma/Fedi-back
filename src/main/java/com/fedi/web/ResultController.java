@@ -21,7 +21,6 @@ import com.fedi.domain.entity.Image;
 import com.fedi.service.AnalysisService;
 import com.fedi.service.ImageService;
 import com.fedi.service.ResultService;
-import com.fedi.web.dto.ModelRequestDto;
 import com.fedi.web.dto.ModelResponseDto;
 import com.fedi.web.dto.ResultDto;
 
@@ -39,7 +38,7 @@ public class ResultController {
 	public List<ResultDto> getResults(HttpServletResponse response, @RequestParam("file") MultipartFile file) throws Exception {
 		ObjectMapper objMapper = new ObjectMapper();
 		
-		String images = imageService.getAllJsonString();
+		String images = imageService.getModelRequest();
 		System.out.println(images);
 		
 		JSONObject analysis = resultService.getAnalysis(file, images); // flask server api call

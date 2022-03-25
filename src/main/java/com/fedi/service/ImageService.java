@@ -8,11 +8,12 @@ import com.fedi.domain.repository.AccountRepository;
 import com.fedi.domain.repository.ImageRepository;
 import com.fedi.domain.repository.TweetRepository;
 import com.fedi.web.dto.ImageRequestDto;
-import com.fedi.web.dto.ModelRequestDto;
 import com.google.gson.Gson;
 
 import lombok.RequiredArgsConstructor;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -74,10 +75,15 @@ public class ImageService {
     }
     
     @Transactional(readOnly = true)
-    public String getAllJsonString() throws JsonProcessingException {
+    public String getModelRequest() {
     	List<Image> images = imageRepository.findAll();
-    	List<ModelRequestDto> reqDtos = images.stream().map(ModelRequestDto::new).collect(Collectors.toList());
-    	System.out.println("debug");
-    	return new Gson().toJson(reqDtos);
+    	JSONArray jsonArr = new JSONArray();
+    	for (Image image : images) {
+    		JSONObject jsonObj = new JSONObject();
+    		jsonObj.put(image.getImageId(), image.getImageUrl());
+//    		jsonObj.put(image.getImageId(), image.getVector()); // vector
+    		jsonArr.add(jsonObj);
+    	}
+    	return jsonArr.toJSONString();
     }
 }
