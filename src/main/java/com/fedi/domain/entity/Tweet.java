@@ -2,9 +2,12 @@ package com.fedi.domain.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -20,29 +23,32 @@ public class Tweet {
     @Column(name = "tweet_id")
     private Long tweetId;
 
-    @Column(name = "account_id")
-    private String accountId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @Column(name = "tweet_url")
     private String tweetUrl;
 
-    private String likes;
-
+    private Boolean reportFlag;
+    
+    private Boolean suspendFlag;
+    
     private String retweets;
 
-    private Boolean reportFlag;
-
     @Builder
-    public Tweet(String accountId, String tweetUrl, String likes, String retweets, Boolean reportFlag) {
-        this.accountId = accountId;
+    public Tweet(Account account, String tweetUrl, Boolean reportFlag, Boolean suspendFlag) {
+        this.account = account;
         this.tweetUrl = tweetUrl;
-        this.likes = likes;
-        this.retweets = retweets;
         this.reportFlag = reportFlag;
+        this.suspendFlag = suspendFlag;
     }
 
     public void updateReportFlag(){
         this.reportFlag = true;
     }
-
+    
+    public void updateSuspendFlag() {
+    	this.suspendFlag = true;
+    }
 }

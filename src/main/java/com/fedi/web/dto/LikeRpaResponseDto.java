@@ -1,18 +1,23 @@
 package com.fedi.web.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.beans.ConstructorProperties;
 
+import lombok.Builder;
+import lombok.Getter;
+
+@Builder
 @Getter
-@Setter
 public class LikeRpaResponseDto {
-	private String name;
+	private String accountName;
 	private String url;
-	private String id;
+	private String accountId;
+	private String sourceId;
 	
-	public LikeRpaResponseDto(String name, String url, String id) {
-		this.name = name;
+	@ConstructorProperties({"accountName", "url", "accountId", "sourceId"})
+	public LikeRpaResponseDto(String accountName, String url, String accountId, String sourceId) {
+		this.accountName = accountName;
 		this.url = url;
-		this.id = id;
+		this.accountId = accountId;
+		this.sourceId = sourceId;
 	}
 }

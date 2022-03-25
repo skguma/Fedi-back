@@ -41,7 +41,6 @@ public class Image {
 	
 	private String eyes;
 	
-	
 	@Builder
 	public Image(Tweet tweet, String imageUrl, Double vector, String eyes) {
 		this.tweet = tweet;

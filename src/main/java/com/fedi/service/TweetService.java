@@ -21,4 +21,16 @@ public class TweetService {
             return "success";
         }
     }
+    
+    public String suspendTweet(Long tweetId) {
+    	Tweet tweet = tweetRepository.findById(tweetId).orElseThrow(() -> new IllegalArgumentException("no tweet id: "+tweetId));
+
+        if(tweet.getSuspendFlag()){
+            return "already suspended";
+        }else{
+            tweet.updateSuspendFlag();
+            tweetRepository.save(tweet);
+            return "success";
+        }
+    }
 }

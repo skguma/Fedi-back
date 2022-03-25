@@ -4,5 +4,8 @@ build/
 src/main/resources/application-datasource.properties
 .classpath
 .project
+.gradle/
 .settings/
 bin/
+settings.gradle
+src/main/webapp/META-INF/MANIFEST.MF
