@@ -1,6 +1,5 @@
 package com.fedi.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fedi.domain.entity.Account;
 import com.fedi.domain.entity.Image;
 import com.fedi.domain.entity.Tweet;
@@ -8,7 +7,6 @@ import com.fedi.domain.repository.AccountRepository;
 import com.fedi.domain.repository.ImageRepository;
 import com.fedi.domain.repository.TweetRepository;
 import com.fedi.web.dto.ImageRequestDto;
-import com.google.gson.Gson;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service

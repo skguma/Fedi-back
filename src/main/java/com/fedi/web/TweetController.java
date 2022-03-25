@@ -12,8 +12,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +30,7 @@ public class TweetController {
     @PatchMapping("/tweets/{tweetId}/suspend")
     public String suspendTweet(HttpServletResponse response, @PathVariable Long tweetId) throws IOException {
     	return tweetService.suspendTweet(tweetId);
-//    	
+    	
     }
 
 }
