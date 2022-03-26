@@ -32,10 +32,10 @@ public class Analysis {
 	private Double similarity;
 	
 	@Column(name = "input_vector")
-	private Double inputVector;
+	private String inputVector;
 	
 	@Builder
-	public Analysis(Image image, Double similarity, Double inputVector) {
+	public Analysis(Image image, Double similarity, String inputVector) {
 		this.image = image;
 		this.similarity = similarity;
 		this.inputVector = inputVector;
