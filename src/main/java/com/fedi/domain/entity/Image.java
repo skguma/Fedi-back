@@ -37,12 +37,12 @@ public class Image {
 	@Column(name = "image_url")
 	private String imageUrl;
 	
-	private Double vector;
+	private String vector;
 	
 	private String eyes;
 	
 	@Builder
-	public Image(Tweet tweet, String imageUrl, Double vector, String eyes) {
+	public Image(Tweet tweet, String imageUrl, String vector, String eyes) {
 		this.tweet = tweet;
 		this.imageUrl = imageUrl;
 		this.vector = vector;
