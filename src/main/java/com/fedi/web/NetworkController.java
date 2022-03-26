@@ -125,7 +125,7 @@ public class NetworkController {
 	}
 	
 	@GetMapping("/retweets")
-	public NetworkResponseDto getRetweets(@RequestBody Map<String, List<Long>> tweetInfo) throws JsonMappingException, JsonProcessingException, ParseException {
+	public NetworkResponseDto getRetweets(@RequestBody Map<String, List<Long>> tweetInfo){
 		List<Long> tweetIds = tweetInfo.get("tweetId");
 		List<Tweet> tweets = networkService.findTweetsbyId(tweetIds);
 		ObjectMapper objMapper = new ObjectMapper();
@@ -148,9 +148,14 @@ public class NetworkController {
 					.url(tweet.getTweetUrl()).build();
 			nodeDtos.add(node);
 			
-			JSONObject outputObj = (JSONObject)jsonParser.parse(tweet.getRetweets());
-			JSONArray jr = (JSONArray)outputObj.get("retweets");
-			resDto = objMapper.readValue(jr.toJSONString(), new TypeReference<List<LikeRpaResponseDto>>(){});
+			JSONObject outputObj;
+			try {
+				outputObj = (JSONObject)jsonParser.parse(tweet.getRetweets());
+				JSONArray jr = (JSONArray)outputObj.get("retweets");
+				resDto = objMapper.readValue(jr.toJSONString(), new TypeReference<List<LikeRpaResponseDto>>(){});
+			} catch (ParseException | JsonProcessingException e) {
+				e.printStackTrace();
+			}
 
 			for (LikeRpaResponseDto dto : resDto) {
 				id++;

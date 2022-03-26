@@ -28,7 +28,7 @@ public class TweetController {
     }
     
     @PatchMapping("/tweets/{tweetId}/suspend")
-    public String suspendTweet(HttpServletResponse response, @PathVariable Long tweetId) throws IOException {
+    public String suspendTweet(@PathVariable Long tweetId) throws IOException {
     	return tweetService.suspendTweet(tweetId);
     	
     }

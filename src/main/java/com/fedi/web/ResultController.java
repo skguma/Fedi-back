@@ -36,18 +36,24 @@ public class ResultController {
 	private final AnalysisService analysisService;
 	
 	@PostMapping(value="/results", consumes = {"multipart/form-data"})
-	public List<ResultDto> getResults(HttpServletResponse response, @RequestParam("file") MultipartFile file) throws Exception {
+	public List<ResultDto> getResults(@RequestParam("file") MultipartFile file) {
 		ObjectMapper objMapper = new ObjectMapper();
 		JSONParser jsonParser = new JSONParser();
 		
 		String images = imageService.getModelRequest();
 		
-		JSONObject analysis = resultService.getAnalysis(file, images); // flask server api call
-		String inputVector = (String) analysis.get("inputVector");
-		JSONObject modelResponse = (JSONObject) analysis.get("analysis");
-		
+		JSONObject analysis;
 		Map<Long, Double> map = null;
-		map = objMapper.readValue(modelResponse.toString(), Map.class);
+		String inputVector = "";
+		try {
+			analysis = resultService.getAnalysis(file, images);
+			inputVector = (String) analysis.get("inputVector");
+			JSONObject modelResponse = (JSONObject) analysis.get("analysis");
+			
+			map = objMapper.readValue(modelResponse.toString(), Map.class);
+		} catch (ParseException | JsonProcessingException e) {
+			e.printStackTrace();
+		}
 		
 		List<Long> analysisIds = analysisService.addAnalysis(map, inputVector);
 		return resultService.searchGreatherThan(analysisIds);
