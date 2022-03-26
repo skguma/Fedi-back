@@ -1,6 +1,7 @@
 package com.fedi.web;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -123,10 +126,10 @@ public class NetworkController {
 		
 		return networks;
 	}
-	
-	@GetMapping("/retweets")
-	public NetworkResponseDto getRetweets(@RequestBody Map<String, List<Long>> tweetInfo){
-		List<Long> tweetIds = tweetInfo.get("tweetId");
+
+	@GetMapping("/retweets/{tweetId}")
+	public NetworkResponseDto getRetweets(@PathVariable Long[] tweetId){
+		List<Long> tweetIds = Arrays.asList(tweetId);
 		List<Tweet> tweets = networkService.findTweetsbyId(tweetIds);
 		ObjectMapper objMapper = new ObjectMapper();
 		JSONParser jsonParser = new JSONParser();
