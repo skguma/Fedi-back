@@ -74,13 +74,11 @@ public class ImageService {
     @Transactional(readOnly = true)
     public String getModelRequest() {
     	List<Image> images = imageRepository.findAll();
-    	JSONArray jsonArr = new JSONArray();
+    	JSONObject jsonObj = new JSONObject();
     	for (Image image : images) {
-    		JSONObject jsonObj = new JSONObject();
     		jsonObj.put(image.getImageId(), image.getImageUrl());
 //    		jsonObj.put(image.getImageId(), image.getVector()); // vector
-    		jsonArr.add(jsonObj);
     	}
-    	return jsonArr.toJSONString();
+    	return jsonObj.toJSONString();
     }
 }
