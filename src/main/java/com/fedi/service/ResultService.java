@@ -39,13 +39,13 @@ public class ResultService {
 				.collect(Collectors.toList());
 	}
 	
-	public JSONObject getAnalysis(MultipartFile file, String images) throws ParseException {	
+	public JSONObject getAnalysis(MultipartFile file, String images) throws ParseException {
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new FormHttpMessageConverter());
 		restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 		
 		JSONParser jsonParser = new JSONParser();
-		String url = "http://localhost:5000/model";
+		String url = "http://localhost:5000/analysis";
 		
 		HttpHeaders httpHeaders = new HttpHeaders(); //Header 생성
 		httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);

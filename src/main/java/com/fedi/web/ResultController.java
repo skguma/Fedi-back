@@ -38,18 +38,16 @@ public class ResultController {
 	@PostMapping(value="/results", consumes = {"multipart/form-data"})
 	public List<ResultDto> getResults(@RequestParam("file") MultipartFile file) {
 		ObjectMapper objMapper = new ObjectMapper();
-		JSONParser jsonParser = new JSONParser();
 		
 		String images = imageService.getModelRequest();
 		
 		JSONObject analysis;
-		Map<Long, Double> map = null;
+		Map<String, Double> map = null;
 		String inputVector = "";
 		try {
 			analysis = resultService.getAnalysis(file, images);
 			inputVector = (String) analysis.get("inputVector");
 			JSONObject modelResponse = (JSONObject) analysis.get("analysis");
-			
 			map = objMapper.readValue(modelResponse.toString(), Map.class);
 		} catch (ParseException | JsonProcessingException e) {
 			e.printStackTrace();
