@@ -45,7 +45,7 @@ public class ResultService {
 		restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 		
 		JSONParser jsonParser = new JSONParser();
-		String url = "http://8971-221-147-94-92.ngrok.io/analysis";
+		String url = "http://0b4f-221-147-94-92.ngrok.io/analysis";
 		
 		HttpHeaders httpHeaders = new HttpHeaders(); //Header 생성
 		httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -55,7 +55,6 @@ public class ResultService {
 		map.add("images", images);
 		HttpEntity<LinkedMultiValueMap<String, Object>> request = new HttpEntity<>(map, httpHeaders);
 		HttpEntity<String> response = restTemplate.postForEntity(url, request, String.class); // call api
-		
 		JSONObject jsonObj = (JSONObject) jsonParser.parse(response.getBody().toString());
 		return jsonObj;
 	}
