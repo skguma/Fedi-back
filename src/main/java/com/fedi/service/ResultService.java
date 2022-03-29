@@ -45,7 +45,7 @@ public class ResultService {
 		restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 		
 		JSONParser jsonParser = new JSONParser();
-		String url = "http://172.30.1.44:5000/analysis";
+		String url = "http://8971-221-147-94-92.ngrok.io/analysis";
 		
 		HttpHeaders httpHeaders = new HttpHeaders(); //Header 생성
 		httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
