@@ -45,7 +45,7 @@ public class ResultService {
 		restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 		
 		JSONParser jsonParser = new JSONParser();
-		String url = "http://10.200.33.7:5000/analysis";
+		String url = "http://localhost:5000/analysis";
 		
 		HttpHeaders httpHeaders = new HttpHeaders(); //Header 생성
 		httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
