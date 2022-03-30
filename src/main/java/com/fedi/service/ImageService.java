@@ -76,8 +76,8 @@ public class ImageService {
     	List<Image> images = imageRepository.findAll();
     	JSONObject jsonObj = new JSONObject();
     	for (Image image : images) {
-    		jsonObj.put(image.getImageId(), image.getImageUrl());
-//    		jsonObj.put(image.getImageId(), image.getVector()); // vector
+//    		jsonObj.put(image.getImageId(), image.getImageUrl());
+    		jsonObj.put(image.getImageId(), image.getVector()); // vector
     	}
     	return jsonObj.toJSONString();
     }
