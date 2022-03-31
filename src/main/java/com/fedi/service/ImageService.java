@@ -44,9 +44,9 @@ public class ImageService {
 
         for(MultipartFile image : images){
             Account account = Account.builder()
-                    .accountId(requestDto.getAccountId())
-                    .accountName(requestDto.getAccountName())
-                    .build();
+                        .accountId(requestDto.getAccountId())
+                        .accountName(requestDto.getAccountName())
+                        .build();
 
             accountRepository.save(account);
 

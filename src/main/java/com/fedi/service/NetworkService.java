@@ -42,5 +42,4 @@ public class NetworkService {
 		}
 		return requestDtos;		
 	}
-	
 }

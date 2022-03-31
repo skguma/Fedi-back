@@ -11,6 +11,7 @@ public class ResultDto {
 	private Double similarity;
 	private String tweetUrl;
 	private Long tweetId; 
+	private String size;
 	
 	public ResultDto(Analysis analysis) {
 		this.imageUrl = analysis.getImage().getImageUrl();
@@ -18,5 +19,6 @@ public class ResultDto {
 		this.similarity = analysis.getSimilarity();
 		this.tweetUrl = analysis.getImage().getTweet().getTweetUrl();
 		this.tweetId = analysis.getImage().getTweet().getTweetId();
+		this.size = analysis.getImage().getSize();
 	}
 }

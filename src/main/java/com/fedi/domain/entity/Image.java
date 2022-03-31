@@ -40,13 +40,16 @@ public class Image {
 	private String vector;
 	
 	private String eyes;
+
+	private String size;
 	
 	@Builder
-	public Image(Tweet tweet, String imageUrl, String vector, String eyes) {
+	public Image(Tweet tweet, String imageUrl, String vector, String eyes, String size) {
 		this.tweet = tweet;
 		this.imageUrl = imageUrl;
 		this.vector = vector;
 		this.eyes = eyes;
+		this.size = size;
 	}
 }
 

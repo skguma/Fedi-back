@@ -4,8 +4,9 @@ plugins {
     id 'org.springframework.boot' version '2.4.4'
 }
 
-group 'efub.porkpotatoes'
+group 'skguma.fedi'
 version '1.0-SNAPSHOT'
+
 
 repositories {
     mavenCentral()
