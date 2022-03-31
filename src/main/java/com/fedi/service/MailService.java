@@ -29,7 +29,7 @@ public class MailService {
         }
 
         String htmlContent = "<p> <img src = 'https://user-images.githubusercontent.com/70956926/160648926-7af1486e-82ec-4076-8961-f66a605205e9.png' height='120' width='600'>\n</p>" +
-         		 "<p><br/>Hello it is Fedi.</p>" +
+         		 "<p><br/>Hello, we are Fedi.</p>" +
                 "<p>Acquaintance-type crimes including illegal synthesis are classified as digital sex crimes in accordance with Articles 14-2 and 14-3 of the Sexual Violence Punishment Act, so reporting and punishment are possible in South Korea. We are sending the original Twitter link that is believed to have uploaded the materials committed digital sex crimes required in the reporting process.<br/><br/></p>"+
                 "<p><b>The original tweet links</b><br/>" + urls + "<br/></p>" +
                 "<p>You can report the perpetrator with these original tweet links to <a href='https://d4u.stop.or.kr/' target = 'parent'>the Digital Sex Crime Victim Reporting Center in South Korea</a>. It helps victims by providing counseling, deletion support, and distribution status monitoring, including the reception of digital sex crime damage, investigation, legal, and medical support.<br/></p>" +
