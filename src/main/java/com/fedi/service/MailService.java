@@ -21,7 +21,7 @@ public class MailService {
 
         mailHandler.setFrom(FROM_ADDRESS);
         mailHandler.setTo(requestDto.getRecipient());
-        mailHandler.setSubject("Fedi 증거 수집 자료 이메일입니다.");
+        mailHandler.setSubject("Fedi: evidence collection email.");
 
         String urls = "";
         for(String url : requestDto.getTweetUrls()){
