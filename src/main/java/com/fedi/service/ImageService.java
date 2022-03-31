@@ -30,19 +30,25 @@ public class ImageService {
 
     @Transactional
     public String upload(List<MultipartFile> images, ImageRequestDto requestDto) throws IllegalArgumentException, IOException {
-        checkParameterValues();
+        if(images.get(0).isEmpty()){
+            throw new IllegalArgumentException("image is null");
+        }
+
+        if(requestDto.getAccountId() == null || requestDto.getAccountName() == null || requestDto.getTweetUrl() == null){
+            throw new IllegalArgumentException("required parameter is null");
+        }
+
+        if(requestDto.getAccountId().isEmpty() || requestDto.getAccountName().isEmpty() || requestDto.getTweetUrl().isEmpty()){
+            throw new IllegalArgumentException("required parameter is empty");
+        }
 
         for(MultipartFile image : images){
-            if(isAccountExist(requestDto.getAccountId)){
-
-            }else{
-                Account account = Account.builder()
+            Account account = Account.builder()
                         .accountId(requestDto.getAccountId())
                         .accountName(requestDto.getAccountName())
                         .build();
 
-                accountRepository.save(account);
-            }
+            accountRepository.save(account);
 
             Tweet tweet = Tweet.builder()
                     .account(account)
