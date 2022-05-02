@@ -6,15 +6,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -24,10 +28,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fedi.domain.entity.Tweet;
+import com.fedi.service.MailService;
 import com.fedi.service.NetworkService;
 import com.fedi.service.RpaAuthService;
-import com.fedi.web.dto.LikeRpaRequestDto;
+import com.fedi.web.dto.RpaRequestDto;
 import com.fedi.web.dto.LinkDto;
+import com.fedi.web.dto.MailRequestDto;
 import com.fedi.web.dto.NetworkResponseDto;
 import com.fedi.web.dto.NodeDto;
 import com.fedi.web.dto.LikeRpaResponseDto;
@@ -38,99 +44,84 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RestController
 public class NetworkController {
+	
+	@Value("${spring.rpa.releaseKeyNetwork}")
+	private String releaseKeyNetwork;
+	
+	@Value("${spring.rpa.releaseKeyReport}")
+	private String releaseKeyReport;
 
 	private final NetworkService networkService;
 	private final RpaAuthService rpaAuthService;
+	private final MailService mailService;
 	
 	@GetMapping("/networks")
-	public NetworkResponseDto getNetworks(@RequestBody Map<String, List<Long>> tweetInfo) throws Exception{
+	public String getNetworks(@RequestBody Map<String, Object> imageInfo) throws Exception{
+		ObjectMapper objMapper = new ObjectMapper();
+		String email = (String) imageInfo.get("email");
 		
-		List<Long> tweetIds = tweetInfo.get("tweetId"); // tweetIds = [1, 2]
+		List<Object> imageIds = (List<Object>) imageInfo.get("imageId");
+		List<Long> ids = imageIds.stream().map(x -> Long.parseLong(String.valueOf(x))).collect(Collectors.toList());
+		List<Tweet> tweets = networkService.findTweet(ids);
+		List<String> urls = networkService.extractUrl(tweets);
+		List<RpaRequestDto> requestDto = urls.stream().map(RpaRequestDto::new).collect(Collectors.toList());
 		
-		List<Tweet> tweets = networkService.findTweetsbyId(tweetIds);
-		List<LikeRpaRequestDto> requestDto = networkService.extractUrl(tweets);
-		
-		Map<String, List<LikeRpaRequestDto>> map = new HashMap();
+		Map<String, List<RpaRequestDto>> map = new HashMap();
 		map.put("InputArguments", requestDto);
-		
-		
+			
 		String inputArguments = new Gson().toJson(map);
 		
-		// rpa 호출
-		// 1. get access_token
+		// Network rpa 호출
+		// 1. get access_token: 24시간마다 갱신
 		String access_token = rpaAuthService.requestAuth();
-//		System.out.println("access_token: " + access_token);
-		
-		// 2. get releaseKey
-		String releaseKey = rpaAuthService.getReleaseKey(access_token);
-//		System.out.println("Key : "+releaseKey);
+		System.out.println("access_token: " + access_token);
 
-		// 3. call RPA and get responseId
-		Long responseId = rpaAuthService.callRpa(access_token, inputArguments);
-//		System.out.println("Id : " + Long.toString(respondeId));
-//		TimeUnit.SECONDS.sleep(1);
+		// 2. call RPA and get responseId
+		Long responseId = rpaAuthService.callRpa(access_token, inputArguments, releaseKeyNetwork);
+		System.out.println("Id : " + Long.toString(responseId));
 
-		// 4. get OutputArguments using responseId
-		List<LikeRpaResponseDto> rpaResponse = rpaAuthService.getOutput(responseId, access_token);
-		
+		// 3. get OutputArguments using responseId
+		String networkOutput = rpaAuthService.getOutput(responseId, access_token);
+		List<LikeRpaResponseDto> rpaResponse = objMapper.readValue(networkOutput, new TypeReference<List<LikeRpaResponseDto>>(){});
 		for (LikeRpaResponseDto e : rpaResponse) {
-			System.out.println(e.getAccountName());
+			System.out.println(e.getSourceId());
 		}
 		
-		ArrayList<NodeDto> nodeDtos = new ArrayList<>();
-		ArrayList<LinkDto> linkDtos = new ArrayList<>();
+		// Tweet entity에 retweets 추가.
+		List<RpaRequestDto> reportReq = networkService.updateRetweets(rpaResponse, tweets);
+		System.out.println("Update Success");
 		
-		// source node의 accountid와 id 맵
-		Map<String, Integer> sourceIdMap = new HashMap<>();
+		// 메일 발송
+		String networkUrl ="http://" + ids.stream().map(s -> String.valueOf(s)).collect(Collectors.joining(","));
+		ArrayList<String> url = new ArrayList<String>(urls);
+		MailRequestDto mailReq = new MailRequestDto(email, url, networkUrl);
+		mailService.sendMail(mailReq);
 		
-		int id = 1;
+		// 신고 rpa 호출
+		urls = networkService.extractUrl(tweets); // 계정 url 추출.
+		reportReq.addAll(urls.stream().map(RpaRequestDto::new).collect(Collectors.toList()));
+		JSONObject input = new JSONObject();
+		input.put("InputArguments", new Gson().toJson(reportReq));
+		input.put("Email", email);
+		String reportInputArg = input.toJSONString();
+		System.out.println(reportInputArg); //
+		Long reportResId = rpaAuthService.callRpa(access_token, reportInputArg, releaseKeyReport);
+		System.out.println(reportResId); //
+		String reportOutput = rpaAuthService.getOutput(reportResId, access_token);
+		System.out.println(reportOutput); //
 		
-		// source node 먼저 추가 (사용자가 넘겨준 트윗Id에 해당하는 정보)
-		for (Tweet tweet : tweets) {
-			sourceIdMap.put(tweet.getAccount().getAccountId(), id);
-			
-			NodeDto node = NodeDto.builder()
-					.id(id)
-					.name(tweet.getAccount().getAccountName())
-					.accountId(tweet.getAccount().getAccountId())
-					.group(id)
-					.value(1)
-					.url(tweet.getTweetUrl()).build();
-			nodeDtos.add(node);
-			id += 1;
-		}
 		
-		// rpa에게 받은 node , link 추가
-		for (LikeRpaResponseDto dto : rpaResponse) {
-			int group = sourceIdMap.get(dto.getSourceId());
-			NodeDto node = NodeDto.builder()
-					.id(id)
-					.name(dto.getAccountName())
-					.accountId(dto.getAccountId())
-					.group(group)
-					.value(0)
-					.url(dto.getUrl()).build();
-			nodeDtos.add(node);
-			
-			LinkDto link = LinkDto.builder()
-					.source(group)
-					.target(id).build();
-			linkDtos.add(link);
-			
-			id += 1;
-		}
+		return "String";
 		
-		NetworkResponseDto networks = NetworkResponseDto.builder()
-				.nodes(nodeDtos)
-				.links(linkDtos).build();
 		
-		return networks;
+		
+
 	}
 
-	@GetMapping("/retweets/{tweetId}")
-	public NetworkResponseDto getRetweets(@PathVariable Long[] tweetId){
-		List<Long> tweetIds = Arrays.asList(tweetId);
-		List<Tweet> tweets = networkService.findTweetsbyId(tweetIds);
+	@GetMapping("/retweets/{imageId}")
+	public NetworkResponseDto getRetweets(@PathVariable Long[] imageId){
+		List<Long> imageIds = Arrays.asList(imageId);
+		List<Tweet> tweets = networkService.findTweet(imageIds);
 		ObjectMapper objMapper = new ObjectMapper();
 		JSONParser jsonParser = new JSONParser();
 		List<LikeRpaResponseDto> resDto = new ArrayList();
@@ -140,13 +131,14 @@ public class NetworkController {
 		
 		int id = 0;
 		int sourceId = 0;
+		int group = 0;
 		for (Tweet tweet : tweets) {
 			sourceId = ++id;
 			NodeDto node = NodeDto.builder()
 					.id(id)
 					.name(tweet.getAccount().getAccountName())
 					.accountId(tweet.getAccount().getAccountId())
-					.group(id)
+					.group(++group)
 					.value(1)
 					.url(tweet.getTweetUrl()).build();
 			nodeDtos.add(node);
@@ -166,7 +158,7 @@ public class NetworkController {
 						.id(id)
 						.name(dto.getAccountName())
 						.accountId(dto.getAccountId())
-						.group(sourceId)
+						.group(group)
 						.value(0)
 						.url(dto.getUrl()).build());
 				

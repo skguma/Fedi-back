@@ -1,7 +1,5 @@
 package com.fedi.service;
 
-import java.util.List;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,10 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fedi.web.dto.LikeRpaResponseDto;
 
 @Service
 public class RpaAuthService {
@@ -32,9 +26,6 @@ public class RpaAuthService {
 	
 	@Value("${spring.rpa.folderId}")
 	private String folderId;
-	
-	@Value("${spring.rpa.releaseKey}")
-	private String releaseKey;
 	
 	static JSONParser jsonParser = new JSONParser();
 	
@@ -60,35 +51,7 @@ public class RpaAuthService {
 		return access_token;
 	}
 	
-	public String getReleaseKey(String access_token) throws Exception{
-		RestTemplate restTemplate = new RestTemplate();
-		String url = "https://cloud.uipath.com/ncyzdol/DefaultTenant/odata/Releases";
-		
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-		httpHeaders.set("X-UIPATH-TenantName", tenantName);
-		httpHeaders.set("Authorization", "Bearer "+access_token);
-		httpHeaders.set("X-UIPATH-OrganizationUnitId", folderId);
-		
-		HttpEntity request = new HttpEntity(httpHeaders);
-		
-		HttpEntity<String> response = restTemplate.exchange(
-				url,
-				HttpMethod.GET,
-				request,
-				String.class
-		);
-		
-		JSONObject jsonObj = (JSONObject)jsonParser.parse(response.getBody().toString());
-		JSONArray value = (JSONArray)jsonObj.get("value");
-		JSONObject valueObj = (JSONObject)value.get(0);
-		String releaseKey = (String)valueObj.get("Key");
-		
-		return releaseKey;
-		
-	}
-	
-	public Long callRpa(String access_token, String inputArguments) throws Exception{
+	public Long callRpa(String access_token, String inputArguments, String releaseKey) throws Exception{
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory()); //error lob 출력.
 		String url = "https://cloud.uipath.com/ncyzdol/DefaultTenant/odata/Jobs/UiPath.Server.Configuration.OData.StartJobs";
@@ -120,10 +83,9 @@ public class RpaAuthService {
 		return id;
 	}
 	
-	public List<LikeRpaResponseDto> getOutput (Long id, String access_token) throws Exception {
+	public String getOutput (Long id, String access_token) throws Exception {
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory()); //error lob 출력.
-		ObjectMapper objMapper = new ObjectMapper();
 		String url = "https://cloud.uipath.com/ncyzdol/DefaultTenant/odata/Jobs("+Long.toString(id)+")";
 		
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -133,19 +95,24 @@ public class RpaAuthService {
 		httpHeaders.set("X-UIPATH-OrganizationUnitId", folderId);
 		
 		HttpEntity request = new HttpEntity(httpHeaders);
-		
-		HttpEntity<String> response = restTemplate.exchange(
-				url,
-				HttpMethod.GET,
-				request,
-				String.class
-		);
-		
-		JSONObject jsonObj = (JSONObject)jsonParser.parse(response.getBody().toString());
-		
-		System.out.println(response.getBody().toString());
-		
-		String state = (String)jsonObj.get("State");
+		String state = "";
+		JSONObject jsonObj;
+		do {
+			HttpEntity<String> response = restTemplate.exchange(
+					url,
+					HttpMethod.GET,
+					request,
+					String.class
+					);
+			
+			jsonObj = (JSONObject)jsonParser.parse(response.getBody().toString());
+			
+			System.out.println(response.getBody().toString());
+			
+			state = (String)jsonObj.get("State");
+			
+		} while (!state.equals("Successful"));
+
 		if (!state.equals("Successful")) {
 			throw new Exception("Network RPA fail");
 		}
@@ -154,9 +121,7 @@ public class RpaAuthService {
 		JSONObject outputObj = (JSONObject)jsonParser.parse(outputStr);
 		String outputArguments = (String)outputObj.get("OutputArguments");
 		
-		List<LikeRpaResponseDto> resDto = objMapper.readValue(outputArguments, new TypeReference<List<LikeRpaResponseDto>>(){});
-		
-		return resDto;
+		return outputArguments;
 		
 		
 	}

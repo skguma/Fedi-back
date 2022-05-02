@@ -7,10 +7,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LikeRpaRequestDto {
+public class RpaRequestDto {
 	private String tweetUrl;
 	
-	public LikeRpaRequestDto(Tweet entity) {
+	public RpaRequestDto(Tweet entity) {
 		this.tweetUrl = entity.getTweetUrl();
+	}
+	
+	public RpaRequestDto(String tweetUrl) {
+		this.tweetUrl = tweetUrl;
 	}
 }
