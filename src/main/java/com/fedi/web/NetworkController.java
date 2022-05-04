@@ -82,36 +82,38 @@ public class NetworkController {
 
 		// 3. get OutputArguments using responseId
 		String networkOutput = rpaAuthService.getOutput(responseId, access_token);
+		System.out.println(networkOutput);
 		List<LikeRpaResponseDto> rpaResponse = objMapper.readValue(networkOutput, new TypeReference<List<LikeRpaResponseDto>>(){});
 		for (LikeRpaResponseDto e : rpaResponse) {
 			System.out.println(e.getSourceId());
 		}
+		return "s";
 		
-		// Tweet entity에 retweets 추가.
-		List<RpaRequestDto> reportReq = networkService.updateRetweets(rpaResponse, tweets);
-		System.out.println("Update Success");
-		
-		// 메일 발송
-		String networkUrl ="http://" + ids.stream().map(s -> String.valueOf(s)).collect(Collectors.joining(","));
-		ArrayList<String> url = new ArrayList<String>(urls);
-		MailRequestDto mailReq = new MailRequestDto(email, url, networkUrl);
-		mailService.sendMail(mailReq);
-		
-		// 신고 rpa 호출
-		urls = networkService.extractUrl(tweets); // 계정 url 추출.
-		reportReq.addAll(urls.stream().map(RpaRequestDto::new).collect(Collectors.toList()));
-		JSONObject input = new JSONObject();
-		input.put("InputArguments", new Gson().toJson(reportReq));
-		input.put("Email", email);
-		String reportInputArg = input.toJSONString();
-		System.out.println(reportInputArg); //
-		Long reportResId = rpaAuthService.callRpa(access_token, reportInputArg, releaseKeyReport);
-		System.out.println(reportResId); //
-		String reportOutput = rpaAuthService.getOutput(reportResId, access_token);
-		System.out.println(reportOutput); //
-		
-		
-		return "String";
+//		// Tweet entity에 retweets 추가.
+//		List<RpaRequestDto> reportReq = networkService.updateRetweets(rpaResponse, tweets);
+//		System.out.println("Update Success");
+//		
+//		// 메일 발송
+//		String networkUrl ="http://" + ids.stream().map(s -> String.valueOf(s)).collect(Collectors.joining(","));
+//		ArrayList<String> url = new ArrayList<String>(urls);
+//		MailRequestDto mailReq = new MailRequestDto(email, url, networkUrl);
+//		mailService.sendMail(mailReq);
+//		
+//		// 신고 rpa 호출
+//		urls = networkService.extractUrl(tweets); // 계정 url 추출.
+//		reportReq.addAll(urls.stream().map(RpaRequestDto::new).collect(Collectors.toList()));
+//		JSONObject input = new JSONObject();
+//		input.put("InputArguments", new Gson().toJson(reportReq));
+//		input.put("Email", email);
+//		String reportInputArg = input.toJSONString();
+//		System.out.println(reportInputArg); //
+//		Long reportResId = rpaAuthService.callRpa(access_token, reportInputArg, releaseKeyReport);
+//		System.out.println(reportResId); //
+//		String reportOutput = rpaAuthService.getOutput(reportResId, access_token);
+//		System.out.println(reportOutput); //
+//		
+//		
+//		return "String";
 		
 		
 		
