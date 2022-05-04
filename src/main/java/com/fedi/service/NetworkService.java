@@ -27,17 +27,11 @@ import lombok.RequiredArgsConstructor;
 public class NetworkService {
 	
 	private final TweetRepository tweetRepository;
-	private final ImageRepository imageRepository;
 	
 	@Transactional(readOnly = true)
 	public List<Tweet> findTweetsbyId(Iterable<Long> ids){
 		List<Tweet> tweets = (List<Tweet>)tweetRepository.findAllById(ids);
 		
-		return tweets;
-	}
-	
-	public List<Tweet> findTweet(List<Long> ids) {
-		List<Tweet> tweets = imageRepository.findTweetUrlByImageId(ids);
 		return tweets;
 	}
 	

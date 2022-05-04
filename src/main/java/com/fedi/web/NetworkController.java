@@ -31,6 +31,7 @@ import com.fedi.domain.entity.Tweet;
 import com.fedi.service.MailService;
 import com.fedi.service.NetworkService;
 import com.fedi.service.RpaAuthService;
+import com.fedi.service.TweetService;
 import com.fedi.web.dto.RpaRequestDto;
 import com.fedi.web.dto.LinkDto;
 import com.fedi.web.dto.MailRequestDto;
@@ -54,6 +55,7 @@ public class NetworkController {
 	private final NetworkService networkService;
 	private final RpaAuthService rpaAuthService;
 	private final MailService mailService;
+	private final TweetService tweetService;
 	
 	@GetMapping("/networks")
 	public String getNetworks(@RequestBody Map<String, Object> imageInfo) throws Exception{
@@ -62,7 +64,7 @@ public class NetworkController {
 		
 		List<Object> imageIds = (List<Object>) imageInfo.get("imageId");
 		List<Long> ids = imageIds.stream().map(x -> Long.parseLong(String.valueOf(x))).collect(Collectors.toList());
-		List<Tweet> tweets = networkService.findTweet(ids);
+		List<Tweet> tweets = tweetService.findTweet(ids);
 		List<String> urls = networkService.extractUrl(tweets);
 		List<RpaRequestDto> requestDto = urls.stream().map(RpaRequestDto::new).collect(Collectors.toList());
 		
@@ -84,46 +86,39 @@ public class NetworkController {
 		String networkOutput = rpaAuthService.getOutput(responseId, access_token);
 		System.out.println(networkOutput);
 		List<LikeRpaResponseDto> rpaResponse = objMapper.readValue(networkOutput, new TypeReference<List<LikeRpaResponseDto>>(){});
-		for (LikeRpaResponseDto e : rpaResponse) {
-			System.out.println(e.getSourceId());
-		}
-		return "s";
 		
-//		// Tweet entity에 retweets 추가.
-//		List<RpaRequestDto> reportReq = networkService.updateRetweets(rpaResponse, tweets);
-//		System.out.println("Update Success");
-//		
-//		// 메일 발송
-//		String networkUrl ="http://" + ids.stream().map(s -> String.valueOf(s)).collect(Collectors.joining(","));
-//		ArrayList<String> url = new ArrayList<String>(urls);
-//		MailRequestDto mailReq = new MailRequestDto(email, url, networkUrl);
-//		mailService.sendMail(mailReq);
-//		
-//		// 신고 rpa 호출
-//		urls = networkService.extractUrl(tweets); // 계정 url 추출.
-//		reportReq.addAll(urls.stream().map(RpaRequestDto::new).collect(Collectors.toList()));
-//		JSONObject input = new JSONObject();
-//		input.put("InputArguments", new Gson().toJson(reportReq));
-//		input.put("Email", email);
-//		String reportInputArg = input.toJSONString();
-//		System.out.println(reportInputArg); //
-//		Long reportResId = rpaAuthService.callRpa(access_token, reportInputArg, releaseKeyReport);
-//		System.out.println(reportResId); //
-//		String reportOutput = rpaAuthService.getOutput(reportResId, access_token);
-//		System.out.println(reportOutput); //
-//		
-//		
-//		return "String";
+		// Tweet entity에 retweets 추가.
+		List<RpaRequestDto> reportReq = networkService.updateRetweets(rpaResponse, tweets);
+		System.out.println("Update Success");
+		
+		// 메일 발송
+		String networkUrl ="http://" + ids.stream().map(s -> String.valueOf(s)).collect(Collectors.joining(","));
+		ArrayList<String> url = new ArrayList<String>(urls);
+		MailRequestDto mailReq = new MailRequestDto(email, url, networkUrl);
+		mailService.sendMail(mailReq);
+		
+		// 신고 rpa 호출
+		urls = networkService.extractUrl(tweets); // 계정 url 추출.
+		reportReq.addAll(urls.stream().map(RpaRequestDto::new).collect(Collectors.toList()));
+		JSONObject input = new JSONObject();
+		input.put("InputArguments", new Gson().toJson(reportReq));
+		input.put("Email", email);
+		String reportInputArg = input.toJSONString();
+		System.out.println(reportInputArg); //
+		Long reportResId = rpaAuthService.callRpa(access_token, reportInputArg, releaseKeyReport);
+		System.out.println(reportResId); //
+		String reportOutput = rpaAuthService.getOutput(reportResId, access_token);
+		System.out.println(reportOutput); //
 		
 		
-		
+		return "String";
 
 	}
 
 	@GetMapping("/retweets/{imageId}")
 	public NetworkResponseDto getRetweets(@PathVariable Long[] imageId){
 		List<Long> imageIds = Arrays.asList(imageId);
-		List<Tweet> tweets = networkService.findTweet(imageIds);
+		List<Tweet> tweets = tweetService.findTweet(imageIds);
 		ObjectMapper objMapper = new ObjectMapper();
 		JSONParser jsonParser = new JSONParser();
 		List<LikeRpaResponseDto> resDto = new ArrayList();
