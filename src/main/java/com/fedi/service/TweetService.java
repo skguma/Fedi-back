@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -27,6 +28,19 @@ public class TweetService {
         }
     }
     
+    public String reportTweets(List<Long> tweetIds) {
+    	List<Tweet> tweets = tweetRepository.findAllById(tweetIds);
+    	for (Tweet tweet : tweets) {
+    		if (tweet.getReportFlag()) {
+    			continue;
+    		} else {
+    			tweet.updateReportFlag();
+    			tweetRepository.save(tweet);
+    		}
+    	}
+    	return "success";
+    }
+    
     public String suspendTweet(Long tweetId) {
     	Tweet tweet = tweetRepository.findById(tweetId).orElseThrow(() -> new IllegalArgumentException("no tweet id: "+tweetId));
 
@@ -39,8 +53,14 @@ public class TweetService {
         }
     }
     
-    public List<Tweet> findTweet(List<Long> ids) {
+    @Transactional(readOnly = true)
+    public List<Tweet> findTweets(List<Long> ids) {
 		List<Tweet> tweets = imageRepository.findTweetUrlByImageId(ids);
 		return tweets;
 	}
+    
+    @Transactional(readOnly = true)
+    public Tweet findTweet(Long id) {
+    	return imageRepository.findTweetByImageId(id);
+    }
 }

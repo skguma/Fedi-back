@@ -13,6 +13,7 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
 
     Optional<Tweet> findById(Long id);
     List<Tweet> findAllById(Iterable<Long> ids);
+    Tweet findByTweetUrl(String tweetUrl);
     
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Tweet t SET t.retweets = :retweets WHERE t.tweetId = :id")

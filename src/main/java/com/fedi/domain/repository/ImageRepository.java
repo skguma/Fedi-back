@@ -14,5 +14,8 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
 	
 	@Query(value = "SELECT t FROM Image i JOIN i.tweet t WHERE i.imageId in :imageIds")
 	List<Tweet> findTweetUrlByImageId(@Param("imageIds") List<Long> ids);
+	
+	@Query(value = "SELECT t FROM Image i JOIN i.tweet t WHERE i.imageId = :imageId")
+	Tweet findTweetByImageId(@Param("imageId") Long id);
   
 }

@@ -41,50 +41,6 @@ public class ImageService {
     private final TweetRepository tweetRepository;
     private final S3Service s3Service;
     
-
-    @Transactional
-    public String upload(List<MultipartFile> images, ImageRequestDto requestDto) throws IllegalArgumentException, IOException {
-        if(images.get(0).isEmpty()){
-            throw new IllegalArgumentException("image is null");
-        }
-
-        if(requestDto.getAccountId() == null || requestDto.getAccountName() == null || requestDto.getTweetUrl() == null){
-            throw new IllegalArgumentException("required parameter is null");
-        }
-
-        if(requestDto.getAccountId().isEmpty() || requestDto.getAccountName().isEmpty() || requestDto.getTweetUrl().isEmpty()){
-            throw new IllegalArgumentException("required parameter is empty");
-        }
-
-        for(MultipartFile image : images){
-            Account account = Account.builder()
-                        .accountId(requestDto.getAccountId())
-                        .accountName(requestDto.getAccountName())
-                        .build();
-
-            accountRepository.save(account);
-
-            Tweet tweet = Tweet.builder()
-                    .account(account)
-                    .tweetUrl(requestDto.getTweetUrl())
-                    .reportFlag(false)
-                    .build();
-
-            tweetRepository.save(tweet);
-
-            String imageUrl = s3Service.upload(image);
-
-            Image entity = Image.builder()
-                    .tweet(tweet)
-                    .imageUrl(imageUrl)
-                    .build();
-
-            imageRepository.save(entity);
-        }
-
-        return "success";
-    }
-    
     public List<VectorResponseDto> extractVector(List<ImageRequestDto> requestDto) throws ParseException, JsonMappingException, JsonProcessingException {
     	HashMap<Integer,String> images = new HashMap<>();
     	int index = 0;
@@ -126,16 +82,22 @@ public class ImageService {
                     .build();
 
 	        accountRepository.save(account);
-	
-	        Tweet tweet = Tweet.builder()
-	                .account(account)
-	                .tweetUrl(image.getTweetUrl())
-	                .reportFlag(false)
-	                .suspendFlag(false)
-	                .build();
-	
-	        tweetRepository.save(tweet);
-	
+	        
+	        String tweetUrl = image.getTweetUrl();
+	        tweetUrl = tweetUrl.substring(0, tweetUrl.lastIndexOf("/", tweetUrl.lastIndexOf("/")-1)); // photo/1 제거.
+	        
+	        Tweet tweet = tweetRepository.findByTweetUrl(tweetUrl);
+	        if (tweet == null) {
+	        	tweet = Tweet.builder()
+	        			.account(account)
+	        			.tweetUrl(tweetUrl)
+	        			.reportFlag(false)
+	        			.suspendFlag(false)
+	        			.build();
+	        	
+	        	tweetRepository.save(tweet);
+	        }
+		
 	        Image entity = Image.builder()
 	                .tweet(tweet)
 	                .imageUrl(image.getImageUrl())

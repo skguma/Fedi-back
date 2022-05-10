@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,18 +31,18 @@ public class TweetController {
         return tweetService.reportTweet(tweetId);
     }
     
-    @PatchMapping("/tweets/{tweetId}/suspend")
-    public String suspendTweet(@PathVariable Long tweetId) throws IOException {
+    @PatchMapping("/tweets/{imageId}/suspend")
+    public String suspendTweet(@PathVariable Long imageId) throws IOException {
+    	Long tweetId = tweetService.findTweet(imageId).getTweetId();
     	return tweetService.suspendTweet(tweetId);
     	
     }
     
-    @GetMapping("/tweets/accountInfo")
-    public Map<String, Object> getAccountInfo(@RequestBody Map<String, Object> imageInfo) {
+    @GetMapping("/tweets/{imageId}/accountInfo")
+    public Map<String, Object> getAccountInfo(@PathVariable Long[] imageId) {
     	HashMap<String, Object> accountInfo = new HashMap<String, Object>();
-    	List<Object> imageIds = (List<Object>) imageInfo.get("imageId");
-    	List<Long> ids = imageIds.stream().map(x -> Long.parseLong(String.valueOf(x))).collect(Collectors.toList());
-    	List<Tweet> tweets = tweetService.findTweet(ids);
+    	List<Long> imageIds = Arrays.asList(imageId);
+    	List<Tweet> tweets = tweetService.findTweets(imageIds);
     	List<String> accountNames = new ArrayList<>();
     	
     	for (Tweet tweet : tweets) {

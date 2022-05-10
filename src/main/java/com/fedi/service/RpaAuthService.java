@@ -107,7 +107,7 @@ public class RpaAuthService {
 			
 			jsonObj = (JSONObject)jsonParser.parse(response.getBody().toString());
 			
-			System.out.println(response.getBody().toString());
+//			System.out.println(response.getBody().toString());
 			
 			state = (String)jsonObj.get("State");
 			
