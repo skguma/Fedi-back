@@ -40,7 +40,6 @@ public class ResultController {
 		ObjectMapper objMapper = new ObjectMapper();
 		
 		String images = imageService.getModelRequest();
-		
 		JSONObject analysis;
 		Map<String, Double> map = null;
 		String inputVector = "";

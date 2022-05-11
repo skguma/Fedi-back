@@ -10,7 +10,7 @@ public class ResultDto {
 	private String eyes;
 	private Double similarity;
 	private String tweetUrl;
-	private Long tweetId; 
+	private Long imageId;
 	private String size;
 	
 	public ResultDto(Analysis analysis) {
@@ -18,7 +18,7 @@ public class ResultDto {
 		this.eyes = analysis.getImage().getEyes();
 		this.similarity = analysis.getSimilarity();
 		this.tweetUrl = analysis.getImage().getTweet().getTweetUrl();
-		this.tweetId = analysis.getImage().getTweet().getTweetId();
+		this.imageId = analysis.getImage().getImageId();
 		this.size = analysis.getImage().getSize();
 	}
 }
