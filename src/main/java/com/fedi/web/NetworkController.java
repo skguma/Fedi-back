@@ -135,12 +135,12 @@ public class NetworkController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Report RPA failed");
 		}
 		
-		List<Long> tweetIds = tweets.stream().map(Tweet::getTweetId).collect(Collectors.toList());
-		tweetService.reportTweets(tweetIds);		
-		
+		List<Long> tweetIds = tweets.stream().map(Tweet::getTweetId).collect(Collectors.toList());	
+		System.out.println(tweetService.reportTweets(tweetIds));
 		return ResponseEntity.ok().body("success");
 
 	}
+	
 
 	@GetMapping("/retweets/{imageId}")
 	public NetworkResponseDto getRetweets(@PathVariable Long[] imageId){
@@ -152,7 +152,7 @@ public class NetworkController {
 		
 		ArrayList<NodeDto> nodeDtos = new ArrayList<>();
 		ArrayList<LinkDto> linkDtos = new ArrayList<>();
-		
+
 		int id = 0;
 		int sourceId = 0;
 		int group = 0;

@@ -50,6 +50,7 @@ public class NetworkService {
 		List<LikeRpaResponseDto> retweets = new ArrayList<>(); // db에 추가할 내용.
 		List<RpaRequestDto> requests = new ArrayList<>(); // 신고 rpa에 넘겨줄 url
 		int idx = 0; 
+
 		for (LikeRpaResponseDto e : response) {
 			RpaRequestDto request = new RpaRequestDto(e.getUrl());
 			requests.add(request);
@@ -65,6 +66,11 @@ public class NetworkService {
 				retweets.clear();
 			}
 		}
+		Map<String, List<LikeRpaResponseDto>> retweetMap = new HashMap();
+		retweetMap.put("retweets", retweets);
+		String retweet = new Gson().toJson(retweetMap);
+		tweetRepository.updateRetweets(retweet, tweets.get(idx).getTweetId());
+		idx++;
 		return requests;
 		
 		

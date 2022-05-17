@@ -73,6 +73,7 @@ public class ImageService {
     public String uploadImages(List<ImageRequestDto> images, List<VectorResponseDto> vectors) {
     	int count = 0;
     	for (VectorResponseDto vector : vectors) {
+    		System.out.println(vector);
     		int index = vector.getIndex();
     		ImageRequestDto image = images.get(index);
     		
@@ -110,6 +111,7 @@ public class ImageService {
 	        count++;
     		
     	}
+    	System.out.println(count);
     	return "success: "+ String.valueOf(count);
     }
     
