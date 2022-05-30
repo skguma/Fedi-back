@@ -53,7 +53,7 @@ public class ImageService {
     	RestTemplate restTemplate = new RestTemplate();
 		
 		JSONParser jsonParser = new JSONParser();
-		String url = "http://localhost:5000/extract";
+		String url = "http://20.214.186.52/extract";
 		
 		HttpHeaders httpHeaders = new HttpHeaders(); //Header 생성
 		httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
