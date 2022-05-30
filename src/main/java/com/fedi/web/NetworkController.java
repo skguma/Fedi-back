@@ -103,7 +103,7 @@ public class NetworkController {
 		System.out.println("Update Success");
 		
 		// 메일 발송
-		String networkUrl ="http://localhost:3000/retweets/" + ids.stream().map(s -> String.valueOf(s)).collect(Collectors.joining(","));
+		String networkUrl ="https://fedi.link/retweets/" + ids.stream().map(s -> String.valueOf(s)).collect(Collectors.joining(","));
 		ArrayList<String> url = (ArrayList<String>) requestDto.stream().map(RpaRequestDto::getTweetUrl).collect(Collectors.toList());
 		MailRequestDto mailReq = new MailRequestDto(email, url, networkUrl);
 		
