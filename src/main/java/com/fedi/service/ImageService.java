@@ -53,7 +53,7 @@ public class ImageService {
     	RestTemplate restTemplate = new RestTemplate();
 		
 		JSONParser jsonParser = new JSONParser();
-		String url = "http://localhost:5000/extract";
+		String url = "http://20.214.186.52/extract";
 		
 		HttpHeaders httpHeaders = new HttpHeaders(); //Header 생성
 		httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -73,6 +73,7 @@ public class ImageService {
     public String uploadImages(List<ImageRequestDto> images, List<VectorResponseDto> vectors) {
     	int count = 0;
     	for (VectorResponseDto vector : vectors) {
+    		System.out.println(vector);
     		int index = vector.getIndex();
     		ImageRequestDto image = images.get(index);
     		
@@ -110,6 +111,7 @@ public class ImageService {
 	        count++;
     		
     	}
+    	System.out.println(count);
     	return "success: "+ String.valueOf(count);
     }
     
