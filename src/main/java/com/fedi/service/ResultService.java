@@ -7,6 +7,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -34,7 +37,7 @@ public class ResultService {
 	
 	@Transactional(readOnly = true)
 	public List<ResultDto> searchGreatherThan(List<Long> analysisIds){
-		return analysisRepository.findGreaterThan(threshold, analysisIds).stream()
+		return analysisRepository.findGreaterThan(threshold, analysisIds, PageRequest.of(0, 20)).stream()
 				.map(ResultDto::new)
 				.collect(Collectors.toList());
 	}
